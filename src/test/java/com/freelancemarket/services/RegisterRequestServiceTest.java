@@ -100,4 +100,23 @@ class RegisterRequestServiceTest {
         assertEquals("User logged in successfully", loginResponse.getMessage());
         assertEquals("okakafavour81@gmail.com",  loginResponse.getEmail());
     }
+
+    @Test
+    public void testToLoginWithWrongPassword_throwsException(){
+        RegisterRequest register = new RegisterRequest();
+        register.setFullName("dabo gilo");
+        register.setEmail("okakafavour81@gmail.com");
+        register.setPassword("12345");
+        register.setPhoneNumber("123456789");
+        register.setRole(Roles.USER);
+        registerRequestService.register(register);
+
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setPassword("0000");
+        loginRequest.setEmail("okakafavour81@gmail.com");
+
+        LoginResponse response = registerRequestService.login(loginRequest);
+        assertNotNull(response);
+        assertEquals("Incorrect password", response.getMessage());
+    }
 }

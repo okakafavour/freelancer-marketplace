@@ -6,6 +6,7 @@ import com.freelancemarket.dtos.response.LoginResponse;
 import com.freelancemarket.dtos.response.RegisterResponse;
 import com.freelancemarket.models.User;
 import com.freelancemarket.repositories.UserRepository;
+import com.freelancemarket.utils.Mapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -36,20 +37,10 @@ public class RegisterRequestServiceImpl implements RegisterRequestService {
             return response;
         }
 
-        User user  = new User();
-        user.setEmail(registerRequest.getEmail());
-        user.setFullName(registerRequest.getFullName());
-        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-        user.setRole(registerRequest.getRole());
-        user.setPhoneNumber(registerRequest.getPhoneNumber());
-        user.setCreatedAt(LocalDateTime.now());
-        userRepository.save(user);
+        User user = Mapper.mapToUser(registerRequest);
+        User savedUser = userRepository.save(user);
 
-
-        response.setEmail(registerRequest.getEmail());
-        response.setMessage("User registered successfully");
-
-        return response;
+        return Mapper.mapToResponse(savedUser);
     }
 
     public LoginResponse login(LoginRequest loginRequest) {
